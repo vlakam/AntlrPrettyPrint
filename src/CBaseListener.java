@@ -1,4 +1,4 @@
-// Generated from /home/petrovich/Downloads/antlr/src/C.g4 by ANTLR 4.7
+// Generated from ./C.g4 by ANTLR 4.6
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -178,18 +178,6 @@ public class CBaseListener implements CListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAssignExpression(CParser.AssignExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterConditional(CParser.ConditionalContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitConditional(CParser.ConditionalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

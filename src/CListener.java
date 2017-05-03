@@ -1,4 +1,4 @@
-// Generated from /home/petrovich/Downloads/antlr/src/C.g4 by ANTLR 4.7
+// Generated from ./C.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -146,16 +146,6 @@ public interface CListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAssignExpression(CParser.AssignExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CParser#conditional}.
-	 * @param ctx the parse tree
-	 */
-	void enterConditional(CParser.ConditionalContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CParser#conditional}.
-	 * @param ctx the parse tree
-	 */
-	void exitConditional(CParser.ConditionalContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CParser#orCondition}.
 	 * @param ctx the parse tree

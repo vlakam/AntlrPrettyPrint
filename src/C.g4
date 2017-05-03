@@ -8,13 +8,14 @@ start
 
 includes
     : include includes
-    |;
+    |
+    ;
 
 include
-    : '#include <' i=Identifier '>' {wr("#include <" + $i.text + ">\n");};
+    : '#include' '<' i=Identifier '>' {wr("#include <" + $i.text + ">\n");};
 
 main
-    : 'int main ()'{wr("int main () ");} (compoundStatement[0]) ;
+    : 'int' 'main' '(' ')'{wr("\nint main () ");} (compoundStatement[0]) ;
 
 conditionStatement[int amount]
     : 'if' '('{wr("if (");} expression ')'{wr(")");} statement[amount]  ('else'{wr(" else ");} statement[amount])?
@@ -22,7 +23,7 @@ conditionStatement[int amount]
 expressionStatement[int amount]
     : {tabs(amount);} expression? ';'{wr(";\n");};
 
-compoundStatement[int amount] : '{'{wr("{\n");} items[amount + 4] '}'{wr("}\n");};
+compoundStatement[int amount] : '{'{wr("{\n");} items[amount + 4]? '}'{wr("}\n");};
 
 items[int amount]
     :   item[amount]
@@ -43,49 +44,72 @@ statement[int amount]
     |   conditionStatement[amount]
     ;
 
-expression: assignExpression | expression ',' assignExpression;
+expression
+    : assignExpression
+    ;
 
-assignOperator : '=' | '*=' | '/=';
+assignOperator
+    : '='{wr(" = ");} 
+    | '*='{wr(" *= ");} 
+    | '/='{wr(" /= ");}
+    ;
 
 assignExpression
-    :   conditional
+    :   orCondition
     |   unary assignOperator assignExpression;
 
-conditional : orCondition;
+orCondition
+    : andCondition 
+    | orCondition '||'{wr(" || ");} andCondition
+    ;
 
-orCondition: andCondition | orCondition '||' andCondition;
+andCondition
+    : eqCondition 
+    | andCondition '&&'{wr(" && ");} eqCondition
+    ;
 
-andCondition: eqCondition | andCondition '&&' eqCondition;
-
-eqCondition: relCondition | eqCondition '==' relCondition | eqCondition '!=' relCondition;
+eqCondition
+    : relCondition 
+    | eqCondition '=='{wr(" == ");} relCondition 
+    | eqCondition '!='{wr(" != ");} relCondition
+    ;
 
 relCondition
     : additive
-    | relCondition '<' additive
-    | relCondition '>' additive;
+    | relCondition '<'{wr(" < ");} additive
+    | relCondition '>'{wr(" > ");} additive
+    ;
 
 additive
     : multiple
-    | additive '+' multiple
-    | additive '-' multiple;
+    | additive '+'{wr(" + ");} multiple
+    | additive '-'{wr(" - ");} multiple;
 
 multiple
     : unary
-    | multiple '*' unary
-    | multiple '/' unary;
+    | multiple '*'{wr(" * ");} unary
+    | multiple '/'{wr(" / ");} unary;
 
 unary
     : primary;
 
 primary
-    : Identifier
+    : i=Identifier {wr($i.text);}
     | constant
-    | '(' expression ')';
+    | '('{wr("(");} expression ')'{wr(")");}
+    ;
 
-type : 'void' {wr("void");}| 'char' {wr("char");}| 'short' {wr("short");}| 'int' {wr("int");}| 'float' {wr("float");}| 'double'{wr("double");};
+type
+    : 'void' {wr("void");}
+    | 'char' {wr("char");}
+    | 'short' {wr("short");}
+    | 'int' {wr("int");}
+    | 'float' {wr("float");}
+    | 'double'{wr("double");}
+    ;
 
 constant
-    : IntConst;
+    : i=IntConst {wr($i.text);};
 
 Identifier
     : [a-zA-Z_] ( [a-zA-Z_] | [0-9] )*;
