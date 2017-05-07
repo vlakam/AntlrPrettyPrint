@@ -3,6 +3,8 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -10,7 +12,7 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-        CLexer clexer = new CLexer(CharStreams.fromStream(System.in));
+        CLexer clexer = new CLexer(CharStreams.fromStream(new FileInputStream(new File("input.txt"))));
         TokenStream ctk = new CommonTokenStream(clexer);
         CParser cpar = new CParser(ctk);
         cpar.start();

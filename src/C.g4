@@ -15,27 +15,32 @@ include
     : '#include' '<' i=Identifier '>' {wr("#include <" + $i.text + ">\n");};
 
 main
-    : 'int' 'main' '(' ')'{wr("\nint main () ");} (compoundStatement[0]) ;
+    : 'int' 'main' '(' ')'{wr("\nint main () ");} '{'{wr("{\n");} items[4]'}'{wr("}");} ;
 
 conditionStatement[int amount]
-    : 'if' '('{wr("if (");} expression ')'{wr(")");} statement[amount]  ('else'{wr(" else ");} statement[amount])?
+    : 'if' '('{wr("if (");} expression ')'{wr(") ");} compoundStatement[amount]  ('else'{wr(" else ");} compoundStatement[amount])?
     ;
-expressionStatement[int amount]
-    : {tabs(amount);} expression? ';'{wr(";\n");};
 
-compoundStatement[int amount] : '{'{wr("{\n");} items[amount + 4]? '}'{wr("}\n");};
+expressionStatement[int amount]
+    : expression? ';'{wr(";");}
+    ;
+
+compoundStatement[int amount]
+    : '{'{wr("{\n");} items[amount + 4]? '}'{tabs(amount);wr("}");}
+    ;
 
 items[int amount]
-    :   item[amount]
-    |   item[amount] items[amount]
+    :   item[amount]{wr("\n");}
+    |   item[amount]{wr("\n");} items[amount]
     ;
 
 item[int amount]
-    :   {tabs(amount);} declaration
-    |   {tabs(amount);}statement[amount];
+    :   {tabs(amount);}declaration
+    |   {tabs(amount);}statement[amount]
+    ;
 
 declaration
-    : type i=Identifier{wr(" " + $i.text + " ");} ('='{wr("= ");} assignExpression)?';'
+    : type i=Identifier{wr(" " + $i.text + " ");} ('='{wr("= ");} assignExpression)?';'{wr(";");}
     ;
 
 statement[int amount]
@@ -117,4 +122,18 @@ Identifier
 IntConst
     : [1-9][0-9]*;
 
-WC: [\n\\s ] -> skip;
+Whitespace
+    :   [ \t]+ -> skip
+    ;
+
+Newline
+    :   ('\r' '\n'?|'\n') -> skip
+    ;
+
+BlockComment
+    :   '/*' .*? '*/' -> skip
+    ;
+
+LineComment
+    :   '//' ~[\r\n]* -> skip
+    ;
