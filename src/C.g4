@@ -4,29 +4,29 @@ grammar C;
     static void tabs(int amount) {for(int i=0; i<amount; i++) System.out.print(' ');}
 }
 start
-    : includes main? EOF;
+    :   includes main? EOF;
 
 includes
-    : include includes
+    :   include includes
     |
     ;
 
 include
-    : '#include' '<' i=Identifier '>' {wr("#include <" + $i.text + ">\n");};
+    :   '#include' '<' i=Identifier '>' {wr("#include <" + $i.text + ">\n");};
 
 main
-    : 'int' 'main' '(' ')'{wr("\nint main () ");} '{'{wr("{\n");} items[4]'}'{wr("}");} ;
+    :   'int' 'main' '(' ')'{wr("\nint main () ");} '{'{wr("{\n");} items[4]'}'{wr("}");} ;
 
 conditionStatement[int amount]
-    : 'if' '('{wr("if (");} expression ')'{wr(") ");} compoundStatement[amount]  ('else'{wr(" else ");} compoundStatement[amount])?
+    :   'if' '('{wr("if (");} expression ')'{wr(")\n");tabs(amount);} compoundStatement[amount]  ('else'{wr("\n");tabs(amount);wr("else\n");tabs(amount);} compoundStatement[amount])?
     ;
 
 expressionStatement[int amount]
-    : expression? ';'{wr(";");}
+    :   expression? ';'{wr(";");}
     ;
 
 compoundStatement[int amount]
-    : '{'{wr("{\n");} items[amount + 4]? '}'{tabs(amount);wr("}");}
+    :   '{'{wr("{\n");} items[amount + 4]? '}'{tabs(amount);wr("}");}
     ;
 
 items[int amount]
@@ -40,7 +40,7 @@ item[int amount]
     ;
 
 declaration
-    : type i=Identifier{wr(" " + $i.text + " ");} ('='{wr("= ");} assignExpression)?';'{wr(";");}
+    :   type i=Identifier{wr(" " + $i.text + " ");} ('='{wr("= ");} assignExpression)?';'{wr(";");}
     ;
 
 statement[int amount]
@@ -50,13 +50,13 @@ statement[int amount]
     ;
 
 expression
-    : assignExpression
+    :   assignExpression
     ;
 
 assignOperator
-    : '='{wr(" = ");} 
-    | '*='{wr(" *= ");} 
-    | '/='{wr(" /= ");}
+    :   '='{wr(" = ");} 
+    |   '*='{wr(" *= ");} 
+    |   '/='{wr(" /= ");}
     ;
 
 assignExpression
@@ -64,63 +64,63 @@ assignExpression
     |   unary assignOperator assignExpression;
 
 orCondition
-    : andCondition 
-    | orCondition '||'{wr(" || ");} andCondition
+    :   andCondition 
+    |   orCondition '||'{wr(" || ");} andCondition
     ;
 
 andCondition
-    : eqCondition 
-    | andCondition '&&'{wr(" && ");} eqCondition
+    :   eqCondition 
+    |   andCondition '&&'{wr(" && ");} eqCondition
     ;
 
 eqCondition
-    : relCondition 
-    | eqCondition '=='{wr(" == ");} relCondition 
-    | eqCondition '!='{wr(" != ");} relCondition
+    :   relCondition 
+    |   eqCondition '=='{wr(" == ");} relCondition 
+    |   eqCondition '!='{wr(" != ");} relCondition
     ;
 
 relCondition
-    : additive
-    | relCondition '<'{wr(" < ");} additive
-    | relCondition '>'{wr(" > ");} additive
+    :   additive
+    |   relCondition '<'{wr(" < ");} additive
+    |   relCondition '>'{wr(" > ");} additive
     ;
 
 additive
-    : multiple
-    | additive '+'{wr(" + ");} multiple
-    | additive '-'{wr(" - ");} multiple;
+    :   multiple
+    |   additive '+'{wr(" + ");} multiple
+    |   additive '-'{wr(" - ");} multiple;
 
 multiple
-    : unary
-    | multiple '*'{wr(" * ");} unary
-    | multiple '/'{wr(" / ");} unary;
+    :   unary
+    |   multiple '*'{wr(" * ");} unary
+    |   multiple '/'{wr(" / ");} unary;
 
 unary
-    : primary;
+    :   primary;
 
 primary
-    : i=Identifier {wr($i.text);}
-    | constant
-    | '('{wr("(");} expression ')'{wr(")");}
+    :   i=Identifier {wr($i.text);}
+    |   constant
+    |   '('{wr("(");} expression ')'{wr(")");}
     ;
 
 type
-    : 'void' {wr("void");}
-    | 'char' {wr("char");}
-    | 'short' {wr("short");}
-    | 'int' {wr("int");}
-    | 'float' {wr("float");}
-    | 'double'{wr("double");}
+    :   'void' {wr("void");}
+    |   'char' {wr("char");}
+    |   'short' {wr("short");}
+    |   'int' {wr("int");}
+    |   'float' {wr("float");}
+    |   'double'{wr("double");}
     ;
 
 constant
-    : i=IntConst {wr($i.text);};
+    :   i=IntConst {wr($i.text);};
 
 Identifier
-    : [a-zA-Z_] ( [a-zA-Z_] | [0-9] )*;
+    :   [a-zA-Z_] ( [a-zA-Z_] | [0-9] )*;
 
 IntConst
-    : [1-9][0-9]*;
+    :   [1-9][0-9]*;
 
 Whitespace
     :   [ \t]+ -> skip
@@ -128,10 +128,6 @@ Whitespace
 
 Newline
     :   ('\r' '\n'?|'\n') -> skip
-    ;
-
-BlockComment
-    :   '/*' .*? '*/' -> skip
     ;
 
 LineComment
